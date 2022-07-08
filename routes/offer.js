@@ -7,9 +7,9 @@ const isAuthenticated = require("../middlewares/isAuthenticated");
 const Offer = require("../models/Offer");
 
 cloudinary.config({
-  cloud_name: "darnzuiz0",
-  api_key: "798225585997295",
-  api_secret: "P3Bc5FY3KH8tJ9hg5N77fDvU9YE",
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
 });
 
 const convertToBase64 = (file) => {

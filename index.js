@@ -4,7 +4,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
-mongoose.connect(process.env.DATABAS_URI);
+mongoose.connect(process.env.DATABASE_URI);
 
 const app = express();
 app.use(express.json());

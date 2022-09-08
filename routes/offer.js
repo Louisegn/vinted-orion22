@@ -2,9 +2,11 @@ const express = require("express");
 const router = express.Router();
 const cloudinary = require("cloudinary").v2;
 const fileUpload = require("express-fileupload");
+const cors = require("cors");
 
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const Offer = require("../models/Offer");
+const User = require("../models/User");
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -73,15 +75,12 @@ router.get("/offers", async (req, res) => {
     }
     if (req.query.priceMax) {
       if (filtersObj.product_price) {
-        filtersObj.product_price = {
-          $gte: req.query.priceMin,
-          $lte: req.query.priceMax,
-        };
+        filtersObj.product_price.$lte = req.query.priceMax;
       } else {
         filtersObj.product_price = { $lte: req.query.priceMax };
       }
     }
-    const sortObj = {};
+    let sortObj = {};
     if (req.query.sort === "price-desc") {
       sortObj.product_price = "desc";
     } else if (req.query.sort === "price-asc") {
@@ -97,8 +96,9 @@ router.get("/offers", async (req, res) => {
     }
 
     const offers = await Offer.find(filtersObj)
+      .populate({ path: "owner", select: "account" })
       .sort(sortObj)
-      .select("product_name product_price")
+      // .select("product_name product_price")
       .limit(limit)
       .skip((page - 1) * limit);
     const count = await Offer.countDocuments(filtersObj);

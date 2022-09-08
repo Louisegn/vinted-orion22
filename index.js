@@ -4,10 +4,12 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
-mongoose.connect(process.env.DATABASE_URI);
+// mongoose.connect(process.env.DATABASE_URI);
+mongoose.connect("mongodb://localhost/vinted-project");
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 const userRoutes = require("./routes/user");
 const offerRoutes = require("./routes/offer");

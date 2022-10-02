@@ -4,8 +4,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
-// mongoose.connect(process.env.DATABASE_URI);
-mongoose.connect("mongodb://localhost/vinted-project");
+mongoose.connect(process.env.DATABASE_URI);
+// mongoose.connect("mongodb://localhost/vinted-project");
 
 const app = express();
 app.use(express.json());

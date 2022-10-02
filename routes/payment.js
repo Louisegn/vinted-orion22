@@ -21,7 +21,7 @@ router.post("/payment", async (req, res) => {
     console.log(response.status);
 
     if (response.status === "succeeded") {
-      await Offer.deleteById(product_id);
+      await Offer.findByIdAndDelete(product_id);
     }
     // TODO
     // Sauvegarder la transaction dans une BDD MongoDB

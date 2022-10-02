@@ -6,7 +6,6 @@ const cors = require("cors");
 
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const Offer = require("../models/Offer");
-const User = require("../models/User");
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,

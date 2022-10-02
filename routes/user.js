@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const cors = require("cors");
+const fileUpload = require("express-fileupload");
+const cloudinary = require("cloudinary").v2;
 
 const SHA256 = require("crypto-js/sha256");
 const encBase64 = require("crypto-js/enc-base64");
@@ -8,8 +10,19 @@ const uid2 = require("uid2");
 
 const User = require("../models/User");
 
-router.post("/user/signup", async (req, res) => {
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+});
+
+const convertToBase64 = (file) => {
+  return `data:${file.mimetype};base64,${file.data.toString("base64")}`;
+};
+
+router.post("/user/signup", fileUpload(), async (req, res) => {
   try {
+    console.log(req.files.avatar);
     if ((await User.findOne({ email: req.body.email })) || !req.body.username) {
       res.status(400).json({ message: "noooop" });
     } else {
@@ -27,6 +40,16 @@ router.post("/user/signup", async (req, res) => {
         hash: hash,
         salt: salt,
       });
+
+      const result = await cloudinary.uploader.upload(
+        convertToBase64(req.files.avatar),
+        {
+          folder: "vinted/avatar",
+          public_id: `${req.body.username}`,
+        }
+      );
+
+      newUser.account.avatar = result;
 
       await newUser.save();
       res.json({
